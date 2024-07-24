@@ -1,0 +1,121 @@
+---
+title: "Create Plots of Type I Error Rates with Correlated Data in One-Way ANOVA"
+format: html
+editor: visual
+---
+
+## Create Plots of Type I Error Rates with Correlated Data in One-Way ANOVA
+
+Formula for Type I error rates taken from equation 7 of Scariano, S. M., & Davenport, J. M. (1987). The effects of violations of independence assumptions in the one-way ANOVA. *The American Statistician, 41*(2), 123-129.
+
+## Code
+
+The following code relies on Formula 7 in Scariano & Davenport, and reproduces the values shown in their Table 2.
+
+```{r}
+
+# Create data and plot for 2 groups
+m <- 2
+n <- c(5,10,20,30,40,50,60,70,80,90,100)
+rho <- seq(0, .999, .001)
+alpha <- .05
+
+out <- rho
+for (i in m) {
+  for (j in n) {
+    p <- c(1-pf((1-rho)*qf(1-alpha,i-1,i*(j-1))/(1+(j-1)*rho),i-1,i*(j-1)))
+    out <- rbind(out,p)
+  }
+}
+
+df_m2 <- data.frame(t(cbind(c(0,n),out)))
+df_m2 <- df_m2[2:nrow(df_m2),]
+df_m2 <- rename(df_m2, Rho = out, "5" = p, "10" = p.1, "20" = p.2, "30" = p.3, "40" = p.4,
+                "50" = p.5, "60" = p.6, "70" = p.7, "80" = p.8, "90" = p.9, "100" = p.10)
+
+df_m2.long <- df_m2 %>% 
+  pivot_longer(-Rho, names_to = "N", values_to = "Error")
+ggplot(df_m2.long, aes(Rho, Error, colour = factor(N, levels = unique(N)))) + 
+  geom_line() +
+  geom_hline(yintercept = .05) +
+  labs(colour = "Group \n Size") + 
+  labs(y = "Type I Error Rate") +
+  labs(title = "Type I Error Rates for 2 Groups as a Function of Rho and Group Size")
+
+#Repeat for 3 groups
+m = 3
+
+out <- rho
+for (i in m) {
+  for (j in n) {
+    p <- c(1-pf((1-rho)*qf(1-alpha,i-1,i*(j-1))/(1+(j-1)*rho),i-1,i*(j-1)))
+    out <- rbind(out,p)
+  }
+}
+
+df_m3 <- data.frame(t(cbind(c(0,n),out)))
+df_m3 <- df_m3[2:nrow(df_m3),]
+df_m3 <- rename(df_m3, Rho = out, "5" = p, "10" = p.1, "20" = p.2, "30" = p.3, "40" = p.4,
+                "50" = p.5, "60" = p.6, "70" = p.7, "80" = p.8, "90" = p.9, "100" = p.10)
+
+df_m3.long <- df_m3 %>% 
+  pivot_longer(-Rho, names_to = "N", values_to = "Error")
+ggplot(df_m3.long, aes(Rho, Error, colour = factor(N, levels = unique(N)))) + 
+  geom_line() +
+  geom_hline(yintercept = .05) +
+  labs(colour = "Group \n Size") + 
+  labs(y = "Type I Error Rate") +
+  labs(title = "Type I Error Rates for 3 Groups as a Function of Rho and Group Size")
+
+
+#Repeat for 5 groups
+m = 5
+
+out <- rho
+for (i in m) {
+  for (j in n) {
+    p <- c(1-pf((1-rho)*qf(1-alpha,i-1,i*(j-1))/(1+(j-1)*rho),i-1,i*(j-1)))
+    out <- rbind(out,p)
+  }
+}
+
+df_m5 <- data.frame(t(cbind(c(0,n),out)))
+df_m5 <- df_m5[2:nrow(df_m5),]
+df_m5 <- rename(df_m5, Rho = out, "5" = p, "10" = p.1, "20" = p.2, "30" = p.3, "40" = p.4,
+                "50" = p.5, "60" = p.6, "70" = p.7, "80" = p.8, "90" = p.9, "100" = p.10)
+
+df_m5.long <- df_m5 %>% 
+  pivot_longer(-Rho, names_to = "N", values_to = "Error")
+ggplot(df_m5.long, aes(Rho, Error, colour = factor(N, levels = unique(N)))) + 
+  geom_line() +
+  geom_hline(yintercept = .05) +
+  labs(colour = "Group \n Size") + 
+  labs(y = "Type I Error Rate") +
+  labs(title = "Type I Error Rates for 5 Groups as a Function of Rho and Group Size")
+
+
+#Repeat for 10 groups
+m = 10
+
+out <- rho
+for (i in m) {
+  for (j in n) {
+    p <- c(1-pf((1-rho)*qf(1-alpha,i-1,i*(j-1))/(1+(j-1)*rho),i-1,i*(j-1)))
+    out <- rbind(out,p)
+  }
+}
+
+df_m10 <- data.frame(t(cbind(c(0,n),out)))
+df_m10 <- df_m10[2:nrow(df_m10),]
+df_m10 <- rename(df_m10, Rho = out, "5" = p, "10" = p.1, "20" = p.2, "30" = p.3, "40" = p.4,
+                "50" = p.5, "60" = p.6, "70" = p.7, "80" = p.8, "90" = p.9, "100" = p.10)
+
+df_m10.long <- df_m10 %>% 
+  pivot_longer(-Rho, names_to = "N", values_to = "Error")
+ggplot(df_m10.long, aes(Rho, Error, colour = factor(N, levels = unique(N)))) + 
+  geom_line() +
+  geom_hline(yintercept = .05) +
+  labs(colour = "Group \n Size") + 
+  labs(y = "Type I Error Rate") +
+  labs(title = "Type I Error Rates for 10 Groups as a Function of Rho and Group Size")
+```
